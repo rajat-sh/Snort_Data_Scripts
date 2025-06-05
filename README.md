@@ -1,1 +1,6 @@
-# Snort_Data_Scripts
+Snort 2
+
+Average bytes per packet     avg_bytes
+
+
+

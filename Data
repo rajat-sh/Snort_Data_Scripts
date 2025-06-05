@@ -1,0 +1,107 @@
+Snort 2
+
+Category			DE						instance
+Average bytes per packet	avg_bytes_per_wire_packet     			avg_bytes_per_wire_packet
+SYN/SYN+ACK rate		syns_per_second synacks_per_second              syns_per_second synacks_per_second 
+
+First use case is when single value from file is needed, in example below if you need value of syns_per_second.
+
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' input_file.txt
+
+examples for files in detection_engines folder
+
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25
+2025-05-25 00:10:00 4.38
+2025-05-25 00:15:00 4.257
+2025-05-25 00:20:00 3.907
+2025-05-25 00:25:00 4.39
+2025-05-25 00:30:00 4.183
+2025-05-25 00:35:00 4.38
+2025-05-25 00:40:00 4.124
+2025-05-25 00:45:00 3.867
+2025-05-25 00:50:00 3.816
+2025-05-25 00:55:00 4.197
+2025-05-25 01:00:00 3.88
+2025-05-25 01:05:00 3.993
+2025-05-25 01:10:00 4.03
+2025-05-25 01:15:00 3.673
+2025-05-25 01:20:00 3.824
+2025-05-25 01:25:00 3.93
+2025-05-25 01:30:00 4.313
+2025-05-25 01:35:00 4.283
+2025-05-25 01:40:00 4.11
+2025-05-25 01:45:00 4.974
+2025-05-25 01:50:00 4.527
+2025-05-25 01:55:00 4.354
+2025-05-25 02:00:00 4.193
+2025-05-25 02:05:00 4.017
+2025-05-25 02:10:00 4.206
+2025-05-25 02:15:00 3.833
+2025-05-25 02:20:00 4.07
+2025-05-25 02:25:00 4.02
+
+
+To process multiple lines, you can write the file in sequence or use file globbing patterns
+
+Example to process two files  2025-05-25 2025-05-26
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25 2025-05-26
+
+To process a range of files from 2025-05-20 to 2025-05-29
+
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
+
+Using wildcard
+
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2*
+
+
+
+
+You can replace the value of column with any value, example to see syn/ack per second
+
+ awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "synacks_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25 
+2025-05-25 00:10:00 4.336
+2025-05-25 00:15:00 4.277
+2025-05-25 00:20:00 3.867
+2025-05-25 00:25:00 4.417
+2025-05-25 00:30:00 4.156
+2025-05-25 00:35:00 4.369
+2025-05-25 00:40:00 4.137
+2025-05-25 00:45:00 3.821
+2025-05-25 00:50:00 3.806
+2025-05-25 00:55:00 4.184
+2025-05-25 01:00:00 3.867
+
+
+For multiple columns example for syns_per_second and synacks_per_second
+
+
+awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2}' 2025-05-25
+2025-05-25 00:10:00 4.38 4.336
+2025-05-25 00:15:00 4.257 4.277
+2025-05-25 00:20:00 3.907 3.867
+2025-05-25 00:25:00 4.39 4.417
+2025-05-25 00:30:00 4.183 4.156
+2025-05-25 00:35:00 4.38 4.369
+2025-05-25 00:40:00 4.124 4.137
+2025-05-25 00:45:00 3.867 3.821
+2025-05-25 00:50:00 3.816 3.806
+2025-05-25 00:55:00 4.197 4.184
+2025-05-25 01:00:00 3.88 3.867
+2025-05-25 01:05:00 3.993 4.009
+2025-05-25 01:10:00 4.03 3.949
+2025-05-25 01:15:00 3.673 3.69
+2025-05-25 01:20:00 3.824 3.814
+2025-05-25 01:25:00 3.93 3.907
+2025-05-25 01:30:00 4.313 4.343
+2025-05-25 01:35:00 4.283 4.216
+2025-05-25 01:40:00 4.11 4.141
+
+
+You can do calculattion for example find Extrapolated average throughput, wire_mbits_per_sec.realtime * 1024 / avg_bytes_per_wire_packet, third column will show Extrapolated average throughput
+
+awk 'BEGIN { FS=","} NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2}'
+
+
+
+
