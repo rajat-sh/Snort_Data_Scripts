@@ -104,4 +104,12 @@ awk 'BEGIN { FS=","} NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") 
 
 
 
+ 8981  2025-06-06 20:45:20 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
+ 8982  2025-06-06 20:45:34 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9] 
+ 8983  2025-06-06 20:46:32 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2*
+ 8984  2025-06-06 20:52:11 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-*
+ 8985  2025-06-06 20:52:25 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-?
+ 8986  2025-06-06 20:53:22 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
+ 8987  2025-06-06 20:53:33 history 
+rajatsh@tex-6dd4f84689-vl4f5:.../f04f2e2a-e77e-11e6-8594-06139b8037b0$ 
 
