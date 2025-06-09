@@ -1,4 +1,4 @@
-Snort 2
+Snort2
 
 Category			DE						instance
 Average bytes per packet	avg_bytes_per_wire_packet     			avg_bytes_per_wire_packet
@@ -6,110 +6,151 @@ SYN/SYN+ACK rate		syns_per_second synacks_per_second              syns_per_secon
 
 First use case is when single value from file is needed, in example below if you need value of syns_per_second.
 
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' input_file.txt
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' INPUT_FILE
+
 
 examples for files in detection_engines folder
 
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25
-2025-05-25 00:10:00 4.38
-2025-05-25 00:15:00 4.257
-2025-05-25 00:20:00 3.907
-2025-05-25 00:25:00 4.39
-2025-05-25 00:30:00 4.183
-2025-05-25 00:35:00 4.38
-2025-05-25 00:40:00 4.124
-2025-05-25 00:45:00 3.867
-2025-05-25 00:50:00 3.816
-2025-05-25 00:55:00 4.197
-2025-05-25 01:00:00 3.88
-2025-05-25 01:05:00 3.993
-2025-05-25 01:10:00 4.03
-2025-05-25 01:15:00 3.673
-2025-05-25 01:20:00 3.824
-2025-05-25 01:25:00 3.93
-2025-05-25 01:30:00 4.313
-2025-05-25 01:35:00 4.283
-2025-05-25 01:40:00 4.11
-2025-05-25 01:45:00 4.974
-2025-05-25 01:50:00 4.527
-2025-05-25 01:55:00 4.354
-2025-05-25 02:00:00 4.193
-2025-05-25 02:05:00 4.017
-2025-05-25 02:10:00 4.206
-2025-05-25 02:15:00 3.833
-2025-05-25 02:20:00 4.07
-2025-05-25 02:25:00 4.02
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-26
+
+Timestamp		SYN_PER_SECOND
+
+2025-05-26 00:10:00	21.559
+2025-05-26 00:15:00	20.951
+2025-05-26 00:20:00	20.683
+2025-05-26 00:25:00	20.172
+2025-05-26 00:30:00	24.394
+2025-05-26 00:35:00	21.638
+2025-05-26 00:40:00	19.452
+2025-05-26 00:45:00	19.436
+2025-05-26 00:50:00	21.773
 
 
-To process multiple lines, you can write the file in sequence or use file globbing patterns
+To process multiple files, you can use file globbing patterns
 
-Example to process two files  2025-05-25 2025-05-26
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25 2025-05-26
+Example to process two files  2025-05-24 2025-05-25
+
+ awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[4-5]
 
 To process a range of files from 2025-05-20 to 2025-05-29
 
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2*
 
-Using wildcard
 
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2*
+To proceess all files in month 2025-05
 
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-*
+
+Basic examples of globbing
+
+
+*.txt matches all files with the .txt extension.
+file?.txt matches file1.txt, file2.txt, but not file10.txt.
+file[0-9].txt matches file0.txt, file1.txt, …, file9.txt.
+[0-9a-z] will match 0 to 9 and a to z (lowercase only).
+[\w] will match any word characters (alphanumeric).
+file[^0-9].txt matches fileA.txt, file_.txt, but not file1.txt.
+*/* - will match foo/bar.
 
 
 
 You can replace the value of column with any value, example to see syn/ack per second
 
- awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) if ($i == "synacks_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25 
-2025-05-25 00:10:00 4.336
-2025-05-25 00:15:00 4.277
-2025-05-25 00:20:00 3.867
-2025-05-25 00:25:00 4.417
-2025-05-25 00:30:00 4.156
-2025-05-25 00:35:00 4.369
-2025-05-25 00:40:00 4.137
-2025-05-25 00:45:00 3.821
-2025-05-25 00:50:00 3.806
-2025-05-25 00:55:00 4.184
-2025-05-25 01:00:00 3.867
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN/ACK_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "synacks_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25
+
+Timestamp		SYN/ACK_PER_SECOND
+
+2025-05-25 00:10:00	20.148
+2025-05-25 00:15:00	20.757
+2025-05-25 00:20:00	18.716
 
 
 For multiple columns example for syns_per_second and synacks_per_second
 
+ awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2}' 2025-05-25
 
-awk 'BEGIN { FS="," } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2}' 2025-05-25
-2025-05-25 00:10:00 4.38 4.336
-2025-05-25 00:15:00 4.257 4.277
-2025-05-25 00:20:00 3.907 3.867
-2025-05-25 00:25:00 4.39 4.417
-2025-05-25 00:30:00 4.183 4.156
-2025-05-25 00:35:00 4.38 4.369
-2025-05-25 00:40:00 4.124 4.137
-2025-05-25 00:45:00 3.867 3.821
-2025-05-25 00:50:00 3.816 3.806
-2025-05-25 00:55:00 4.197 4.184
-2025-05-25 01:00:00 3.88 3.867
-2025-05-25 01:05:00 3.993 4.009
-2025-05-25 01:10:00 4.03 3.949
-2025-05-25 01:15:00 3.673 3.69
-2025-05-25 01:20:00 3.824 3.814
-2025-05-25 01:25:00 3.93 3.907
-2025-05-25 01:30:00 4.313 4.343
-2025-05-25 01:35:00 4.283 4.216
-2025-05-25 01:40:00 4.11 4.141
+Timestamp		SYN_PER_SECOND	SYN/ACK_PER_SECOND
 
-
-You can do calculattion for example find Extrapolated average throughput, wire_mbits_per_sec.realtime * 1024 / avg_bytes_per_wire_packet, third column will show Extrapolated average throughput
-
-awk 'BEGIN { FS=","} NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2}'
+2025-05-25 00:10:00	20.018		20.148
+2025-05-25 00:15:00	20.648		20.757
+2025-05-25 00:20:00	18.583		18.716
+2025-05-25 00:25:00	19.508		19.634
+2025-05-25 00:30:00	27.085		27.213
+2025-05-25 00:35:00	19.992		20.135
+2025-05-25 00:40:00	19.53		19.664
+2025-05-25 00:45:00	20.931		21.052
+2025-05-25 00:50:00	20.747		20.874
+2025-05-25 00:55:00	18.482		18.63
+2025-05-25 01:00:00	20.219		20.342
+2025-05-25 01:05:00	18.562		18.699
 
 
 
- 8981  2025-06-06 20:45:20 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
- 8982  2025-06-06 20:45:34 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9] 
- 8983  2025-06-06 20:46:32 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2*
- 8984  2025-06-06 20:52:11 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-*
- 8985  2025-06-06 20:52:25 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-?
- 8986  2025-06-06 20:53:22 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-2[0-9]
- 8987  2025-06-06 20:53:33 history 
-rajatsh@tex-6dd4f84689-vl4f5:.../f04f2e2a-e77e-11e6-8594-06139b8037b0$ 
+You can do calculation using column value, example calcuating SYN/SYN/ACK ratio
 
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' 2025-05-25
+
+Timestamp		SYN_PER_SECOND	SYN/ACK_PER_SECOND	SYN_TO_SYN/ACK_RATIO
+
+2025-05-25 00:10:00	20.018		20.148			0.993548
+2025-05-25 00:15:00	20.648		20.757			0.994749
+2025-05-25 00:20:00	18.583		18.716			0.992894
+2025-05-25 00:25:00	19.508		19.634			0.993583
+2025-05-25 00:30:00	27.085		27.213			0.995296
+2025-05-25 00:35:00	19.992		20.135			0.992898
+2025-05-25 00:40:00	19.53		19.664			0.993186
+2025-05-25 00:45:00	20.931		21.052			0.994252
+2025-05-25 00:50:00	20.747		20.874			0.993916
+
+
+
+
+Common use cases for snort2 DE files
+
+SYN to SYN/ACK ratio
+
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' INPUT_FILE
+
+
+
+Average bytes per packet, Average throughput, Extrapolated average throughput
+
+
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput""\t""Extrapolated_Average_Throughput""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "avg_bytes_per_wire_packet") col1=i; if ($i == "wire_mbits_per_sec.realtime") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t""\t"$col2"\t""\t""\t"$col2*1024/$col1}' 2025-05-25
+
+Timestamp		Average_Bytes_Per_Packet	Average_Throughput	Extrapolated_Average_Throughput
+
+2025-05-25 00:10:00	400.333				0.848			2.16907
+2025-05-25 00:15:00	410.667				0.863			2.15189
+2025-05-25 00:20:00	400.667				0.794			2.02926
+2025-05-25 00:25:00	412				0.856			2.12753
+
+
+Snort2 receive and drop statistics
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Receive_Statistics""\t""Drop_Statistics""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "pkt_stats.pkts_recv") col1=i; if ($i == "pkt_stats.pkts_drop") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:    %S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2}' 2025-05-25
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Receive_Statistics""\t""Drop_Statistics""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "pkt_stats.pkts_recv") col1=i; if ($i == "pkt_stats.pkts_drop") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t"$col2}' 2025-05-25
+
+Timestamp		Receive_Statistics	Drop_Statistics
+
+2025-05-25 00:10:00	246603			0
+2025-05-25 00:15:00	246311			0
+2025-05-25 00:20:00	231398			0
+2025-05-25 00:25:00	241898			0
+2025-05-25 00:30:00	316100			0
+2025-05-25 00:35:00	243820			0
+2025-05-25 00:40:00	239231			0
+2025-05-25 00:45:00	257313			0
+2025-05-25 00:50:00	251850			0
+
+
+
+Common use cases for snort2 instance files
+
+
+To get SYN, SYN/ACK and ratio  for all files in various instances, you can iterate through the files using wildcard character
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' INPUT_FILE
