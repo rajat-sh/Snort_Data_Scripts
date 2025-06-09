@@ -6,9 +6,6 @@ SYN/SYN+ACK rate		syns_per_second synacks_per_second              syns_per_secon
 
 First use case is when single value from file is needed, in example below if you need value of syns_per_second.
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } NR==1 {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' INPUT_FILE
-
-
 Examples for files in detection_engines folder
 
 awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\n" } FNR==1  {if (NR==1) {for (i=1; i<=NF; i++) if ($i == "syns_per_second") col=i; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col}' 2025-05-25
@@ -95,35 +92,72 @@ awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_P
 Average bytes per packet, Average throughput, Extrapolated average throughput
 
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput""\t""Extrapolated_Average_Throughput""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "avg_bytes_per_wire_packet") col1=i; if ($i == "wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t""\t"$col2"\t""\t""\t"$col2*1024/$col1}' 2025-05-25
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput_Mbps""\t\t""Extrapolated_Average_Throughput_Mbps""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "avg_bytes_per_wire_packet") col1=i; if ($i == "wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t""\t"$col2"\t""\t""\t\t"$col2*1024/$col1}' 2025-05-25
 
-Timestamp		Average_Bytes_Per_Packet	Average_Throughput	Extrapolated_Average_Throughput
+Timestamp		Average_Bytes_Per_Packet	Average_Throughput_Mbps		Extrapolated_Average_Throughput_Mbps
 
-2025-05-25 00:10:00	400.333				0.848			2.16907
-2025-05-25 00:15:00	410.667				0.863			2.15189
+2025-05-25 00:10:00	400.333				0.848				2.16907
+2025-05-25 00:15:00	410.667				0.863				2.15189
+2025-05-25 00:20:00	400.667				0.794				2.02926
+2025-05-25 00:25:00	412				0.856				2.12753
 
 
 Snort2 receive and drop statistics
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Receive_Statistics""\t""Drop_Statistics""\n" }FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "pkt_stats.pkts_recv") col1=i; if ($i == "pkt_stats.pkts_drop") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t"$col2}' 2025-05-25
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Receive_Packets_Stat""\t""Drop_Packets_Stat""\n" }FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "pkt_stats.pkts_recv") col1=i; if ($i == "pkt_stats.pkts_drop") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t"$col2}' 2025-05-25
 
-Timestamp		Receive_Statistics	Drop_Statistics
+Timestamp		Receive_Packets_Stat	Drop_Packets_Stat
 
 2025-05-25 00:10:00	246603			0
 2025-05-25 00:15:00	246311			0
-2025-05-25 00:20:00	231398			0
-2025-05-25 00:25:00	241898			0
-2025-05-25 00:30:00	316100			0
 2025-05-25 00:35:00	243820			0
-2025-05-25 00:40:00	239231			0
-2025-05-25 00:45:00	257313			0
-
-
 
 
 Common use cases for snort2 instance files
 
+To get SYN, SYN/ACK and ratio  for all files in various instances, iterate through the files using wildcard character *, to get data of a specific instance use instance-N instead of instance-*, where N is number of instance
 
-To get SYN, SYN/ACK and ratio  for all files in various instances, you can iterate through the files using wildcard character
+awk 'BEGIN { FS=","; print"\n" "FILENAME" "\t\t""Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } FNR==2  {if (NR==2) {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print FILENAME"\t"t"\t"$col1"\t""\t"$col2"\t\t\t"$col1/$col2}' instance-*/2025-05-25
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } NR==1 {for (i=1; i<=NF; i++) {if ($i == "syns_per_second") col1=i; if ($i == "synacks_per_second") col2=i}; next} {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' INPUT_FILE
+FILENAME		Timestamp		SYN_PER_SECOND	SYN/ACK_PER_SECOND	SYN_TO_SYN/ACK_RATIO
+
+instance-1/2025-05-25	2025-05-25 00:05:00	1.621		1.621			1
+instance-1/2025-05-25	2025-05-25 00:10:00	1.739		1.739			1
+instance-1/2025-05-25	2025-05-25 00:15:00	1.611		1.607			1.00249
+
+
+
+Average bytes per packet, Average throughput, Extrapolated average throughput
+
+awk 'BEGIN { FS=","; print"\n" "FILENAME" "\t\t""Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput_Mbps""\t\t""Extrapolated_Average_Throughput_Mbps""\n" } FNR==2  {if (NR==2) {for (i=1; i<=NF; i++) {if ($i == "avg_bytes_per_wire_packet") col1=i; if ($i == "wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print FILENAME"\t"t"\t"$col1"\t\t\t""\t"$col2"\t\t\t\t"$col2*1024/$col1}' instance-*/2025-05-25
+
+FILENAME		Timestamp		Average_Bytes_Per_Packet	Average_Throughput_Mbps		Extrapolated_Average_Throughput_Mbps
+
+instance-1/2025-05-25	2025-05-25 00:05:00	406				0.104				0.262305
+instance-1/2025-05-25	2025-05-25 00:10:00	420				0.104				0.253562
+instance-1/2025-05-25	2025-05-25 00:15:00	394				0.094				0.244305
+instance-1/2025-05-25	2025-05-25 00:20:00	415				0.106				0.261552
+instance-1/2025-05-25	2025-05-25 00:25:00	448				0.196				0.448
+instance-1/2025-05-25	2025-05-25 00:30:00	409				0.096				0.240352
+instance-1/2025-05-25	2025-05-25 00:35:00	400				0.097				0.24832
+instance-1/2025-05-25	2025-05-25 00:40:00	420				0.107				0.260876
+instance-1/2025-05-25	2025-05-25 00:45:00	373				0.093				0.255314
+instance-1/2025-05-25	2025-05-25 00:50:00	427				0.098				0.235016
+instance-1/2025-05-25	2025-05-25 00:55:00	398				0.119				0.306171
+
+
+awk 'BEGIN { FS=","; print"\n" "FILENAME" "\t\t" "Timestamp""\t""\t""Receive_Packets_Stat""\t""Drop_Packets_Stat""\n" }FNR==2 {if (NR==2) {for (i=1; i<=NF; i++) {if ($i == "pkt_stats.pkts_recv") col1=i; if ($i == "pkt_stats.pkts_drop") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print FILENAME "\t" t"\t"$col1"\t""\t""\t"$col2}' instance-*/2025-05-25
+
+FILENAME		Timestamp		Receive_Packets_Stat	Drop_Packets_Stat
+
+instance-1/2025-05-25	2025-05-25 00:05:00	82105			0
+instance-1/2025-05-25	2025-05-25 00:10:00	82167			0
+instance-1/2025-05-25	2025-05-25 00:15:00	77131			0
+instance-1/2025-05-25	2025-05-25 00:20:00	80655			0
+instance-1/2025-05-25	2025-05-25 00:25:00	105303			0
+instance-1/2025-05-25	2025-05-25 00:30:00	81273			0
+instance-1/2025-05-25	2025-05-25 00:35:00	79771			0
+instance-1/2025-05-25	2025-05-25 00:40:00	85757			0
+instance-1/2025-05-25	2025-05-25 00:45:00	84045			0
+
+
