@@ -160,4 +160,42 @@ instance-1/2025-05-25	2025-05-25 00:35:00	79771			0
 instance-1/2025-05-25	2025-05-25 00:40:00	85757			0
 instance-1/2025-05-25	2025-05-25 00:45:00	84045			0
 
+snort3
+
+Common use cases for snort2 DE files
+
+
+SYN to SYN/ACK ratio
+
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.syns_per_second") col1=i; if ($i == "stats.synacks_per_second") col2=i}; next}} /^[^#]/  {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' 2025-06-16
+
+Timestamp		SYN_PER_SECOND	SYN/ACK_PER_SECOND	SYN_TO_SYN/ACK_RATIO
+
+2025-06-16 00:05:00	2062.38		1440.76			1.43145
+2025-06-16 00:10:00	2097.5		1415.57			1.48174
+2025-06-16 00:15:00	2027.88		1421.58			1.4265
+2025-06-16 00:20:00	2014.45		1411.19			1.42748
+2025-06-16 00:25:00	2016.46		1412.42			1.42766
+2025-06-16 00:30:00	2021.11		1416.92			1.42641
+2025-06-16 00:35:00	2073.02		1456.99			1.42281
+2025-06-16 00:40:00	2024.59		1416.51			1.42928
+
+
+Average bytes per packet, Average throughput, Extrapolated average throughput
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput_Mbps""\t\t""Extrapolated_Average_Throughput_Mbps""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.avg_bytes_per_wire_packet") col1=i; if ($i == "stats.wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t""\t"$col2"\t""\t""\t\t"$col2*1024/$col1}' 2025-06-16
+
+Timestamp		Average_Bytes_Per_Packet	Average_Throughput_Mbps		Extrapolated_Average_Throughput_Mbps
+
+2025-06-16 00:05:00	227.616				29.6091				133.206
+2025-06-16 00:10:00	214.23				30.196				144.334
+2025-06-16 00:15:00	227.291				28.7088				129.34
+2025-06-16 00:20:00	227.478				29.0659				130.841
+2025-06-16 00:25:00	224.749				28.9921				132.094
+2025-06-16 00:30:00	228.114				28.7579				129.094
+2025-06-16 00:35:00	223.291				28.9825				132.912
+2025-06-16 00:40:00	222.76				28.8268				132.513
+2025-06-16 00:45:00	221.549				28.0272				129.542
+
 
