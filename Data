@@ -216,3 +216,28 @@ Timestamp				DAQ_RECEIVED			DAQ_DROPPED		DAQ_OUTSTANDING
 2025-06-16 00:40:00			4852768				0			316662990208
 2025-06-16 00:45:00			4743970				0			316662990209
 2025-06-16 00:50:00			4813448				0			316662990207
+
+
+
+
+
+To list differnt protocols traffic
+
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t\tSSL""\tDNS""\tSSH""\tSMTP""\tNETFLOW""\tPOP""\tFTP""\tCIP""\tIMAP""\tSIP""\tDCE_SMB""\tBACK_ORIF""\n" } FNR==1  {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "ssl.packets") col1=i; if ($i == "dns.packets") col2=i; if($i == "ssh.packets") col3=i;if ($i == "smtp.packets") col4=i;if($i == "netflow.packets") col5=i;if($i == "pop.packets") col6=i;if($i=="ftp_data.packets")col7=i;if($i=="cip.packets")col8=i;if($i=="imap.packets")col9=i;if($i=="sip.packets")col10=i;if($i=="dce_smb.packets")col11=i;if($i=="back_orifice.packets")col12=i}next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t"$col2"\t"$col3"\t"$col4"\t"$col5"\t"$col6"\t"$col7"\t"$col8"\t"$col9"\t"$col10"\t"$col11"\t"$col12}' 2025-06-16
+
+Timestamp		SSL	DNS	SSH	SMTP	NETFLOW	POP	FTP	CIP	IMAP	SIP	DCE_SMB	BACK_ORIF
+
+2025-06-16 00:05:00	0	424645	859	626	0	0	0	0	0	0	4364	0
+2025-06-16 00:10:00	0	637883	424	511	0	0	0	0	0	0	4268	0
+2025-06-16 00:15:00	0	394632	498	526	0	0	0	0	0	0	4386	0
+2025-06-16 00:20:00	0	429574	437	537	0	0	0	0	0	0	4218	0
+2025-06-16 00:25:00	0	457390	534	461	0	0	0	0	0	0	4187	0
+2025-06-16 00:30:00	0	393181	198	447	0	0	0	0	0	0	4464	0
+2025-06-16 00:35:00	0	428131	785	446	0	0	0	0	0	0	4669	0
+2025-06-16 00:40:00	0	465055	340	330	0	0	1	0	0	0	5098	0
+2025-06-16 00:45:00	0	396914	375	18	0	0	0	0	0	0	5108	0
+
+
+
+
