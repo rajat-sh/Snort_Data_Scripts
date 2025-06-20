@@ -168,23 +168,18 @@ Common use cases for snort3 DE files
 SYN to SYN/ACK ratio
 
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.syns_per_second") col1=i; if ($i == "stats.synacks_per_second") col2=i}; next}} /^[^#]/  {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t"$col2"\t""\t""\t"$col1/$col2}' 2025-06-16
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t\t""SYN_PER_SECOND""\t""SYN/ACK_PER_SECOND""\t""SYN_TO_SYN/ACK_RATIO""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.syns_per_second") col1=i; if ($i == "stats.synacks_per_second") col2=i}; next}} /^[^#]/  {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t\t"$col2"\t\t\t"$col1/$col2}' 2025-06-16
 
 Timestamp		SYN_PER_SECOND	SYN/ACK_PER_SECOND	SYN_TO_SYN/ACK_RATIO
 
 2025-06-16 00:05:00	2062.38		1440.76			1.43145
 2025-06-16 00:10:00	2097.5		1415.57			1.48174
 2025-06-16 00:15:00	2027.88		1421.58			1.4265
-2025-06-16 00:20:00	2014.45		1411.19			1.42748
-2025-06-16 00:25:00	2016.46		1412.42			1.42766
-2025-06-16 00:30:00	2021.11		1416.92			1.42641
-2025-06-16 00:35:00	2073.02		1456.99			1.42281
-2025-06-16 00:40:00	2024.59		1416.51			1.42928
 
 
 Average bytes per packet, Average throughput, Extrapolated average throughput
 
-awk 'BEGIN { FS=","; print"\n" "Timestamp""\t""\t""Average_Bytes_Per_Packet""\t""Average_Throughput_Mbps""\t\t""Extrapolated_Average_Throughput_Mbps""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.avg_bytes_per_wire_packet") col1=i; if ($i == "stats.wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t""\t""\t""\t"$col2"\t""\t""\t\t"$col2*1024/$col1}' 2025-06-16
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t\t""Average_Bytes_Per_Packet""\t""Average_Throughput_Mbps""\t\t""Extrapolated_Average_Throughput_Mbps""\n" } FNR==1 {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "stats.avg_bytes_per_wire_packet") col1=i; if ($i == "stats.wire_mbits_per_sec.realtime") col2=i}; next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t"$col1"\t\t\t\t"$col2"\t\t\t\t"$col2*1024/$col1}' 2025-06-16
 
 Timestamp		Average_Bytes_Per_Packet	Average_Throughput_Mbps		Extrapolated_Average_Throughput_Mbps
 
@@ -197,5 +192,27 @@ Timestamp		Average_Bytes_Per_Packet	Average_Throughput_Mbps		Extrapolated_Averag
 2025-06-16 00:35:00	223.291				28.9825				132.912
 2025-06-16 00:40:00	222.76				28.8268				132.513
 2025-06-16 00:45:00	221.549				28.0272				129.542
+2025-06-16 00:50:00	224.128				28.7688				131.439
 
+For DAQ stats
 
+daq.received – number of packets received from hardware
+
+daq.dropped - number of packets dropped due to snort-busy
+
+daq.outstanding - number of packets unprocessed but waiting 
+
+awk 'BEGIN { FS=","; print"\n" "Timestamp""\t\t\t\t""DAQ_RECEIVED""\t\t\t""DAQ_DROPPED""\t\t""DAQ_OUTSTANDING""\n" } FNR==1  {if (NR==1) {for (i=1; i<=NF; i++) {if ($i == "daq.received") col1=i; if ($i == "daq.dropped") col2=i; if($i == "daq.outstanding") col3=i};next}} /^[^#]/ {cmd="date -d @" $1 " +\"%Y-%m-%d %H:%M:%S\""; cmd | getline t; close(cmd); print t"\t\t\t"$col1"\t\t\t\t"$col2"\t\t\t"$col3}' 2025-06-16
+
+Timestamp				DAQ_RECEIVED			DAQ_DROPPED		DAQ_OUTSTANDING
+
+2025-06-16 00:05:00			4878148				0			316662990207
+2025-06-16 00:10:00			5285679				0			316662990207
+2025-06-16 00:15:00			4736571				0			316662990208
+2025-06-16 00:20:00			4791543				0			316662990207
+2025-06-16 00:25:00			4837410				0			316662990207
+2025-06-16 00:30:00			4727548				0			316662990207
+2025-06-16 00:35:00			4867378				0			316662990208
+2025-06-16 00:40:00			4852768				0			316662990208
+2025-06-16 00:45:00			4743970				0			316662990209
+2025-06-16 00:50:00			4813448				0			316662990207
