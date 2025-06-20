@@ -1,6 +1,3 @@
-Snort 2
-
-Average bytes per packet     avg_bytes
-
+AWK one liners to process snort perstats files. 
 
 
